@@ -13,6 +13,6 @@
 #define READ(var)                                                              \
   N_READ(var)                                                                  \
   if (var.size() == 0) {                                                       \
-    LOG("invalid input !");                                                    \
+    LOG("invalid input !\n");                                                  \
     return;                                                                    \
   }

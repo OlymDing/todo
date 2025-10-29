@@ -22,8 +22,14 @@ void ConsoleUI::loop() {
   while (goNext) {
     LOG_MAIN("");
     std::getline(std::cin, buffer);
+
+    // handle ctrl+d
+    if (std::cin.eof())
+      break;
+
     parse();
   }
+  std::cout << "bye bye ~\n";
 }
 
 // private
@@ -54,10 +60,7 @@ void ConsoleUI::parse() {
 }
 
 // callbacks
-void ConsoleUI::quit(std::string_view params) {
-  goNext = false;
-  LOG("bye bye ~\n");
-}
+void ConsoleUI::quit(std::string_view params) { goNext = false; }
 
 void ConsoleUI::help(std::string_view params) {
   LOG("this is help manual...\n");
