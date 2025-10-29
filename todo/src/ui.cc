@@ -67,13 +67,26 @@ void ConsoleUI::help(std::string_view params) {
 }
 
 void ConsoleUI::todo(std::string_view params) {
-  READ(title)
-  N_READ(due_date)
+  READ(title);
+  N_READ(due_date);
 
-  LOG("title is " << title << " and due_date is " << due_date << '\n');
+  unsigned long long timeStamp = 0;
+
+  if (due_date.size() != 0) {
+    timeStamp = date2timeStamp(due_date);
+    if (timeStamp == 0)
+      LOG("invalid date input, ignored\n");
+  }
+
+  TS.insert(title, timeStamp);
 }
 
-void ConsoleUI::show(std::string_view params) {}
+void ConsoleUI::show(std::string_view params) {
+  auto todos = TS.queryAll();
+  for (auto &todo : todos) {
+    todo.print();
+  }
+}
 
 void ConsoleUI::remove(std::string_view params) {}
 

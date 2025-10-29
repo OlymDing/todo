@@ -13,6 +13,7 @@ TS::TodoStorage() {
                                "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                                "name TEXT NOT NULL,"
                                "timestamp INTEGER NOT NULL,"
+                               "duetime INTEGER,"
                                "status INTEGER NOT NULL);";
   char *errMsg = nullptr;
   if (sqlite3_exec(db, createTableSQL, nullptr, nullptr, &errMsg) !=
@@ -24,10 +25,10 @@ TS::TodoStorage() {
 
 TS::~TodoStorage() { sqlite3_close(db); }
 
-bool TS::insert(std::string name) {
-  Todo item(name);
+bool TS::insert(std::string name, unsigned long long dueTime = 0) {
+  Todo item(name, dueTime);
   const char *insertSQL =
-      "INSERT INTO todos (name, timestamp, status) VALUES (?, ?, ?);";
+      "INSERT INTO todos (name, timestamp, status, duetime) VALUES (?, ?, ?, ?);";
 
   sqlite3_stmt *stmt;
   if (sqlite3_prepare_v2(db, insertSQL, -1, &stmt, nullptr) != SQLITE_OK) {
@@ -35,8 +36,9 @@ bool TS::insert(std::string name) {
   }
 
   sqlite3_bind_text(stmt, 1, item.name.c_str(), -1, SQLITE_STATIC);
-  sqlite3_bind_int64(stmt, 2, item.timestamp);
+  sqlite3_bind_int64(stmt, 2, item.timeStamp);
   sqlite3_bind_int(stmt, 3, item.status);
+  sqlite3_bind_int(stmt, 4, item.dueTime);
 
   bool success = (sqlite3_step(stmt) == SQLITE_DONE);
   sqlite3_finalize(stmt);
@@ -44,7 +46,7 @@ bool TS::insert(std::string name) {
   return success;
 }
 
-std::vector<Todo> TS::query() {
+std::vector<Todo> TS::queryAll() {
   std::vector<Todo> todos;
   const char *selectSQL = "SELECT id, name, timestamp, status FROM todos;";
 
@@ -57,7 +59,7 @@ std::vector<Todo> TS::query() {
     Todo item;
     item.id = sqlite3_column_int(stmt, 0);
     item.name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
-    item.timestamp = sqlite3_column_int64(stmt, 2);
+    item.timeStamp = sqlite3_column_int64(stmt, 2);
     item.status = (Todo::Status)sqlite3_column_int(stmt, 3);
     todos.push_back(item);
   }

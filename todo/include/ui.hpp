@@ -1,3 +1,4 @@
+#include "todo.hpp"
 #include <functional>
 #include <string>
 #include <string_view>
@@ -12,6 +13,7 @@ private:
   void parse();
 
   std::string buffer;
+  TodoStorage TS;
   bool goNext = true;
 
   // callbacks

@@ -1,3 +1,6 @@
+#pragma once
+#include <string>
+
 #define REGISTER(cmd)                                                          \
   callbacks[#cmd] = std::bind(&ConsoleUI::cmd, this, std::placeholders::_1);
 
@@ -16,3 +19,6 @@
     LOG("invalid input !\n");                                                  \
     return;                                                                    \
   }
+
+unsigned long long date2timeStamp(std::string &dateStr);
+std::string timeStamp2date(time_t timestamp);
