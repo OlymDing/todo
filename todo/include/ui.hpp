@@ -22,4 +22,9 @@ private:
 
   // callbacks
   void quit(std::string_view params);
+  void insert(std::string_view params);
+  void help(std::string_view params);
+  void show(std::string_view params);
+  void remove(std::string_view params);
+  void modify(std::string_view params);
 };

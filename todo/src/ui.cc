@@ -15,7 +15,14 @@
 // public
 // ======
 
-ConsoleUI::ConsoleUI() { REGISTER(quit); }
+ConsoleUI::ConsoleUI() {
+  REGISTER(quit);
+  REGISTER(insert);
+  REGISTER(help);
+  REGISTER(show);
+  REGISTER(remove);
+  REGISTER(modify);
+}
 
 void ConsoleUI::loop() {
   while (goNext) {
@@ -56,4 +63,20 @@ void ConsoleUI::parse() {
 void ConsoleUI::quit(std::string_view params) {
   goNext = false;
   LOG("bye bye ~\n");
+}
+
+void ConsoleUI::help(std::string_view params) {
+  LOG("this is help manual...\n");
+}
+
+void ConsoleUI::insert(std::string_view params) {
+}
+
+void ConsoleUI::show(std::string_view params) {
+}
+
+void ConsoleUI::remove(std::string_view params) {
+}
+
+void ConsoleUI::modify(std::string_view params) {
 }
