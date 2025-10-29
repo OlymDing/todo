@@ -24,9 +24,9 @@ xmake run
 
 ## steps
 ### step one:
-  prepare basic structs & DB storage
+  prepare basic structs & DB storage [done]
 ### step two:
-  a very simple UI
+  a very simple UI -> a basic terminal while loop reading commands
 ### step three:
   add a basic testing system
 ### step four:

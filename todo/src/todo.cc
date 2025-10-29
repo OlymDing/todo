@@ -1,5 +1,4 @@
 #include "todo.hpp"
-#include <iostream>
 #include <sqlite3.h>
 
 using TS = TodoStorage;
@@ -84,7 +83,6 @@ bool TS::update(Todo todo) {
   return success;
 }
 
-// 删除TODO项
 bool TS::remove(int id) {
   const char *deleteSQL = "DELETE FROM todos WHERE id = ?;";
 

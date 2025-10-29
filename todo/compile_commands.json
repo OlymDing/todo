@@ -1,0 +1,11 @@
+[
+{
+  "directory": "/home/olym/projects/todo/todo",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-Iinclude", "-DNDEBUG", "-o", "build/.objs/todo/linux/x86_64/release/src/main.cc.o", "src/main.cc"],
+  "file": "src/main.cc"
+},
+{
+  "directory": "/home/olym/projects/todo/todo",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-Iinclude", "-DNDEBUG", "-o", "build/.objs/todo/linux/x86_64/release/src/todo.cc.o", "src/todo.cc"],
+  "file": "src/todo.cc"
+}]

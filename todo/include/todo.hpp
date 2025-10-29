@@ -12,7 +12,7 @@ struct Todo {
   enum Status {
     ready,
     suspend,
-    closeed,
+    closed,
   };
   unsigned int id;
   unsigned long long timestamp;
