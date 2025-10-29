@@ -1,23 +1,17 @@
 #include "ui.hpp"
+#include "util.hpp"
 #include <functional>
 #include <iostream>
-#include <iterator>
 #include <sstream>
 #include <string>
 #include <string_view>
-
-#define REGISTER(cmd)                                                          \
-  callbacks[#cmd] = std::bind(&ConsoleUI::cmd, this, std::placeholders::_1);
-
-#define LOG(words) std::cout << __func__ << " >> " << words
-#define LOG_MAIN(words) std::cout << "Console >> " << words
 
 // public
 // ======
 
 ConsoleUI::ConsoleUI() {
   REGISTER(quit);
-  REGISTER(insert);
+  REGISTER(todo);
   REGISTER(help);
   REGISTER(show);
   REGISTER(remove);
@@ -69,14 +63,15 @@ void ConsoleUI::help(std::string_view params) {
   LOG("this is help manual...\n");
 }
 
-void ConsoleUI::insert(std::string_view params) {
+void ConsoleUI::todo(std::string_view params) {
+  READ(title)
+  N_READ(due_date)
+
+  LOG("title is " << title << " and due_date is " << due_date << '\n');
 }
 
-void ConsoleUI::show(std::string_view params) {
-}
+void ConsoleUI::show(std::string_view params) {}
 
-void ConsoleUI::remove(std::string_view params) {
-}
+void ConsoleUI::remove(std::string_view params) {}
 
-void ConsoleUI::modify(std::string_view params) {
-}
+void ConsoleUI::modify(std::string_view params) {}
