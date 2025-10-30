@@ -27,8 +27,8 @@ TS::~TodoStorage() { sqlite3_close(db); }
 
 bool TS::insert(std::string name, unsigned long long dueTime = 0) {
   Todo item(name, dueTime);
-  const char *insertSQL =
-      "INSERT INTO todos (name, timestamp, status, duetime) VALUES (?, ?, ?, ?);";
+  const char *insertSQL = "INSERT INTO todos (name, timestamp, status, "
+                          "duetime) VALUES (?, ?, ?, ?);";
 
   sqlite3_stmt *stmt;
   if (sqlite3_prepare_v2(db, insertSQL, -1, &stmt, nullptr) != SQLITE_OK) {
@@ -37,8 +37,8 @@ bool TS::insert(std::string name, unsigned long long dueTime = 0) {
 
   sqlite3_bind_text(stmt, 1, item.name.c_str(), -1, SQLITE_STATIC);
   sqlite3_bind_int64(stmt, 2, item.timeStamp);
-  sqlite3_bind_int(stmt, 3, item.status);
-  sqlite3_bind_int(stmt, 4, item.dueTime);
+  sqlite3_bind_int64(stmt, 3, item.status);
+  sqlite3_bind_int64(stmt, 4, item.dueTime);
 
   bool success = (sqlite3_step(stmt) == SQLITE_DONE);
   sqlite3_finalize(stmt);
@@ -48,7 +48,8 @@ bool TS::insert(std::string name, unsigned long long dueTime = 0) {
 
 std::vector<Todo> TS::queryAll() {
   std::vector<Todo> todos;
-  const char *selectSQL = "SELECT id, name, timestamp, status, duetime FROM todos;";
+  const char *selectSQL =
+      "SELECT id, name, timestamp, status, duetime FROM todos;";
 
   sqlite3_stmt *stmt;
   if (sqlite3_prepare_v2(db, selectSQL, -1, &stmt, nullptr) != SQLITE_OK) {
@@ -67,6 +68,31 @@ std::vector<Todo> TS::queryAll() {
 
   sqlite3_finalize(stmt);
   return todos;
+}
+
+Todo TS::query(int id) {
+  Todo todo;
+  const char *selectSQL =
+      "SELECT id, name, timestamp, status, duetime WHERE id = ? FROM todos;";
+
+  sqlite3_stmt *stmt;
+  if (sqlite3_prepare_v2(db, selectSQL, -1, &stmt, nullptr) != SQLITE_OK) {
+    return todo;
+  }
+  sqlite3_bind_int64(stmt, 1, id);
+
+  int rc = sqlite3_step(stmt) == SQLITE_ROW;
+
+  if (rc == SQLITE_ROW) {
+    todo.id = sqlite3_column_int(stmt, 0);
+    todo.name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+    todo.timeStamp = sqlite3_column_int64(stmt, 2);
+    todo.status = (Todo::Status)sqlite3_column_int64(stmt, 3);
+    todo.dueTime = (Todo::Status)sqlite3_column_int64(stmt, 4);
+  }
+
+  sqlite3_finalize(stmt);
+  return todo;
 }
 
 bool TS::update(Todo todo) {

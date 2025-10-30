@@ -28,8 +28,8 @@ struct Todo {
         dueTime(dueTime) {}
 
   void print() {
-    printf("%d | %s | %s | %s\n", id, name.c_str(),
-           timeStamp2date(timeStamp).c_str(), timeStamp2date(dueTime).c_str());
+    printf("%d | %s | %s | %s\n", id, timeStamp2date(timeStamp).c_str(),
+           timeStamp2date(dueTime).c_str(), name.c_str());
   }
 };
 
@@ -42,6 +42,7 @@ public:
   bool update(Todo);
   bool remove(int);
   std::vector<Todo> queryAll();
+  Todo query(int);
 
 private:
   sqlite3 *db;

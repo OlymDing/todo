@@ -88,6 +88,12 @@ void ConsoleUI::show(std::string_view params) {
   }
 }
 
-void ConsoleUI::remove(std::string_view params) {}
+void ConsoleUI::remove(std::string_view params) {
+  std::stringstream ss;
+  std::string id, operation;
+  
+  ss << params;
+  ss >> id >> operation;
+}
 
 void ConsoleUI::modify(std::string_view params) {}

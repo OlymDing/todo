@@ -29,6 +29,9 @@ unsigned long long date2timeStamp(std::string &dateStr) {
 }
 
 std::string timeStamp2date(time_t timestamp) {
+  if (timestamp == 0)
+    return "no due";
+  
   std::tm *localTime = std::localtime(&timestamp);
   int year, month, day;
   year = localTime->tm_year + 1900;
