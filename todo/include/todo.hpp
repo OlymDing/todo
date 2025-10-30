@@ -23,12 +23,13 @@ struct Todo {
   Status status;
 
   Todo() {}
-  Todo(std::string name, unsigned long long dueTime)
+  Todo(std::string name, unsigned long long dueTime = 0)
       : name(name), timeStamp(std::time(0)), status(Status::ready),
         dueTime(dueTime) {}
+
   void print() {
-    printf("%d | %s | %s\n", id, name.c_str(),
-           timeStamp2date(timeStamp).c_str());
+    printf("%d | %s | %s | %s\n", id, name.c_str(),
+           timeStamp2date(timeStamp).c_str(), timeStamp2date(dueTime).c_str());
   }
 };
 
