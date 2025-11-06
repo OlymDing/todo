@@ -30,8 +30,22 @@ struct Todo {
         dueTime(dueTime) {}
 
   void print() {
-    printf("%d | %s | %s | %s\n", id, timeStamp2date(timeStamp).c_str(),
-           timeStamp2date(dueTime).c_str(), name.c_str());
+    std::string statusStr;
+    switch (status) {
+    case underway:
+      statusStr = "underway";
+      break;
+
+    case closed:
+      statusStr = "closed";
+      break;
+
+    case suspend:
+      statusStr = "suspend";
+      break;
+    }
+    printf("%d | %s | %s | %s | %s\n", id, timeStamp2date(timeStamp).c_str(),
+           timeStamp2date(dueTime).c_str(), name.c_str(), statusStr.c_str());
   }
 };
 
