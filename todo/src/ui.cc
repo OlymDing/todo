@@ -1,4 +1,5 @@
 #include "ui.hpp"
+#include "parser.hpp"
 #include "util.hpp"
 #include <functional>
 #include <iostream>
@@ -15,7 +16,7 @@ ConsoleUI::ConsoleUI() {
   REGISTER(help);
   REGISTER(show);
   REGISTER(remove);
-  REGISTER(modify);
+  REGISTER(update);
 }
 
 void ConsoleUI::loop() {
@@ -88,12 +89,31 @@ void ConsoleUI::show(std::string_view params) {
   }
 }
 
-void ConsoleUI::remove(std::string_view params) {
-  std::stringstream ss;
-  std::string id, operation;
-  
-  ss << params;
-  ss >> id >> operation;
-}
+void ConsoleUI::remove(std::string_view params) {}
 
-void ConsoleUI::modify(std::string_view params) {}
+// modify <id> <status = underway> <title = "">
+void ConsoleUI::update(std::string_view params) {
+  int id;
+  Todo::Status status;
+  std::string title = "";
+
+  auto count = Parser::parse(std::string(params), {&id, &status, &title});
+
+  if (count > 1) {
+    // at least id and status are provided
+    auto todo = TS.query(id);
+
+    if (!todo.isValid) {
+      std::cout << "no such id !\n";
+      return;
+    }
+
+    todo.status = status;
+    if (title != "")
+      todo.name = title;
+
+    TS.update(todo);
+  } else {
+    std::cout << "invalid params !\n";
+  }
+}

@@ -24,5 +24,5 @@ private:
   void help(std::string_view params);
   void show(std::string_view params);
   void remove(std::string_view params);
-  void modify(std::string_view params);
+  void update(std::string_view params);
 };

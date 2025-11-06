@@ -1,5 +1,9 @@
 #pragma once
 #include <string>
+#include <variant>
+#include <vector>
+
+using Value = std::variant<int, std::string, float>;
 
 #define REGISTER(cmd)                                                          \
   callbacks[#cmd] = std::bind(&ConsoleUI::cmd, this, std::placeholders::_1);
@@ -22,3 +26,4 @@
 
 unsigned long long date2timeStamp(std::string &dateStr);
 std::string timeStamp2date(time_t timestamp);
+std::vector<Value> parse(std::string_view view, int length);

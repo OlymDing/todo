@@ -12,19 +12,21 @@
 struct Todo {
 
   enum Status {
-    ready,
+    underway,
     suspend,
     closed,
   };
-  unsigned int id;
+  unsigned int id = 0;
   unsigned long long timeStamp;
   unsigned long long dueTime;
   std::string name;
   Status status;
 
+  bool isValid = false;
+
   Todo() {}
   Todo(std::string name, unsigned long long dueTime = 0)
-      : name(name), timeStamp(std::time(0)), status(Status::ready),
+      : name(name), timeStamp(std::time(0)), status(Status::underway),
         dueTime(dueTime) {}
 
   void print() {
@@ -38,8 +40,8 @@ public:
   TodoStorage();  // setup
   ~TodoStorage(); // unsetup
 
-  bool insert(std::string, unsigned long long);
-  bool update(Todo);
+  bool insert(const std::string &, unsigned long long);
+  bool update(const Todo &);
   bool remove(int);
   std::vector<Todo> queryAll();
   Todo query(int);
