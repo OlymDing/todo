@@ -83,13 +83,45 @@ void ConsoleUI::todo(std::string_view params) {
 }
 
 void ConsoleUI::show(std::string_view params) {
-  auto todos = TS.queryAll();
-  for (auto &todo : todos) {
-    todo.print();
+  int id;
+  auto count = Parser::parse(std::string(params), {&id});
+
+  if (count == 0) {
+    auto todos = TS.queryAll();
+    for (auto &todo : todos) {
+      todo.print();
+    }
+  } else if (count == 1) {
+    auto todo = TS.query(id);
+    if (todo.isValid)
+      todo.print();
+    else
+      LOG("no such id !\n");
   }
 }
 
-void ConsoleUI::remove(std::string_view params) {}
+void ConsoleUI::remove(std::string_view params) {
+  int id;
+  auto count = Parser::parse(std::string(params), {&id});
+
+  if (count != 1) {
+    LOG("invalid param!\n");
+  }
+
+  auto todo = TS.query(id);
+  if (todo.isValid) {
+    LOG("sure to delete this? (y/n)\n");
+    todo.print();
+
+    READ(confirm);
+    if (confirm == "y") {
+      TS.remove(id);
+      LOG("id " << id << " removed\n");
+    } else
+      LOG("cancelled\n");
+  } else
+    LOG("no such id !\n");
+}
 
 // modify <id> <status = underway> <title = "">
 void ConsoleUI::update(std::string_view params) {
@@ -104,7 +136,7 @@ void ConsoleUI::update(std::string_view params) {
     auto todo = TS.query(id);
 
     if (!todo.isValid) {
-      std::cout << "no such id !\n";
+      LOG("no such id !\n");
       return;
     }
 
@@ -114,6 +146,6 @@ void ConsoleUI::update(std::string_view params) {
 
     TS.update(todo);
   } else {
-    std::cout << "invalid params !\n";
+    LOG("invalid params !\n");
   }
 }
