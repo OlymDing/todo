@@ -12,6 +12,7 @@
 
 ConsoleUI::ConsoleUI() {
   REGISTER(quit);
+  REGISTER(exit);
   REGISTER(todo);
   REGISTER(help);
   REGISTER(show);
@@ -62,6 +63,7 @@ void ConsoleUI::parse() {
 
 // callbacks
 void ConsoleUI::quit(std::string_view params) { goNext = false; }
+void ConsoleUI::exit(std::string_view params) { goNext = false; }
 
 void ConsoleUI::help(std::string_view params) {
   LOG("this is help manual...\n");
