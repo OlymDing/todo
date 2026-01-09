@@ -21,6 +21,7 @@ ConsoleUI::ConsoleUI() {
 }
 
 void ConsoleUI::loop() {
+  show("");
   while (goNext) {
     LOG_MAIN("");
     std::getline(std::cin, buffer);

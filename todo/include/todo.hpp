@@ -7,7 +7,7 @@
 
 #include <sqlite3.h>
 
-#define DB_NAME "test.db"
+#define DB_NAME "/home/olym/projects/todo/todo/build/linux/x86_64/debug/test.db"
 
 struct Todo {
 
