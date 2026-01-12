@@ -108,7 +108,7 @@ Todo TS::query(int id) {
     todo.mTimeStamp = sqlite3_column_int64(stmt, 2);
     todo.mStatus = (Todo::Status)sqlite3_column_int64(stmt, 3);
     todo.mDueTime = (Todo::Status)sqlite3_column_int64(stmt, 4);
-    todo.isValid = true;
+    todo.mIsValid = true;
   }
 
   sqlite3_finalize(stmt);

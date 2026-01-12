@@ -127,7 +127,7 @@ void ConsoleUI::show(std::string_view params) {
     }
   } else if (count == 1) {
     auto todo = TS.query(id);
-    if (todo.isValid)
+    if (todo.mIsValid)
       todo.print();
     else
       LOG("no such id !\n");
@@ -143,7 +143,7 @@ void ConsoleUI::remove(std::string_view params) {
   }
 
   auto todo = TS.query(id);
-  if (todo.isValid) {
+  if (todo.mIsValid) {
     LOG("sure to delete this? (y/n)\n");
     todo.print();
 
@@ -169,7 +169,7 @@ void ConsoleUI::update(std::string_view params) {
     // at least id and status are provided
     auto todo = TS.query(id);
 
-    if (!todo.isValid) {
+    if (!todo.mIsValid) {
       LOG("no such id !\n");
       return;
     }
