@@ -1,6 +1,7 @@
 #include "ui.hpp"
 #include "parser.hpp"
 #include "util.hpp"
+#include <exception>
 #include <functional>
 #include <iostream>
 #include <sstream>
@@ -14,6 +15,7 @@ ConsoleUI::ConsoleUI() {
   REGISTER(quit);
   REGISTER(exit);
   REGISTER(todo);
+  REGISTER(subtodo);
   REGISTER(help);
   REGISTER(show);
   REGISTER(remove);
@@ -74,20 +76,45 @@ void ConsoleUI::todo(std::string_view params) {
   N_READ(due_date);
 
   unsigned long long timeStamp = 0;
+  if (due_date.size() != 0) {
+    timeStamp = date2timeStamp(due_date);
+    if (timeStamp == 0)
+      LOG("invalid date input, ignored\n");
+  }
+  TS.insert(title, 0, timeStamp);
+}
 
+void ConsoleUI::subtodo(std::string_view params) {
+  READ(title);
+  READ(parentId);
+  N_READ(due_date);
+
+  int intParentId = 0;
+  unsigned long long timeStamp = 0;
+
+  // process parentId
+  try {
+    intParentId = std::stoi(parentId);
+  } catch (std::exception e) {
+    LOG("invalid parentId !");
+    return;
+  }
+
+  // process due time
   if (due_date.size() != 0) {
     timeStamp = date2timeStamp(due_date);
     if (timeStamp == 0)
       LOG("invalid date input, ignored\n");
   }
 
-  TS.insert(title, timeStamp);
+  TS.insert(title, intParentId, 0);
 }
 
 void ConsoleUI::show(std::string_view params) {
   int id;
   auto count = Parser::parse(std::string(params), {&id});
 
+  Todo::printHeaders();
   if (count == 0) {
     auto todos = TS.queryAll();
     for (auto &todo : todos) {
@@ -142,9 +169,9 @@ void ConsoleUI::update(std::string_view params) {
       return;
     }
 
-    todo.status = status;
+    todo.mStatus = status;
     if (title != "")
-      todo.name = title;
+      todo.mName = title;
 
     TS.update(todo);
   } else {

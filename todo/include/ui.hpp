@@ -22,6 +22,7 @@ private:
   void quit(std::string_view params);
   void exit(std::string_view params);
   void todo(std::string_view params);
+  void subtodo(std::string_view params);
   void help(std::string_view params);
   void show(std::string_view params);
   void remove(std::string_view params);
