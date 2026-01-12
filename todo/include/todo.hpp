@@ -62,6 +62,7 @@ public:
   bool remove(int);
   std::vector<Todo> queryAll();
   Todo query(int);
+  bool verifyID(unsigned int id);
 
 private:
   sqlite3 *db;

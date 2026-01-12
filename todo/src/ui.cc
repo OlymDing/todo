@@ -95,8 +95,12 @@ void ConsoleUI::subtodo(std::string_view params) {
   // process parentId
   try {
     intParentId = std::stoi(parentId);
+    if (!TS.verifyID(intParentId)) {
+      LOG("no such parentId !\n");
+      return;
+    }
   } catch (std::exception e) {
-    LOG("invalid parentId !");
+    LOG("invalid parentId !\n");
     return;
   }
 
@@ -107,7 +111,7 @@ void ConsoleUI::subtodo(std::string_view params) {
       LOG("invalid date input, ignored\n");
   }
 
-  TS.insert(title, intParentId, 0);
+  TS.insert(title, intParentId, timeStamp);
 }
 
 void ConsoleUI::show(std::string_view params) {

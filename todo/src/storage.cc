@@ -132,3 +132,17 @@ bool TS::remove(int id) {
 
   return success;
 }
+
+bool TS::verifyID(unsigned int id) {
+  const char *selectSQL = "SELECT * FROM todos where id = ?;";
+
+  sqlite3_stmt *stmt;
+  if (sqlite3_prepare_v2(db, selectSQL, -1, &stmt, nullptr) != SQLITE_OK) {
+    return false;
+  }
+
+  sqlite3_bind_int64(stmt, 1, id);
+
+  int rc = sqlite3_step(stmt);
+  return rc == SQLITE_ROW;
+}
