@@ -26,9 +26,9 @@ struct Todo {
   bool isValid = false;
 
   Todo() {}
-  Todo(std::string name, unsigned long long dueTime = 0)
+  Todo(std::string name, int parentId, unsigned long long dueTime)
       : mName(name), mTimeStamp(std::time(0)), mStatus(Status::underway),
-        mDueTime(dueTime) {}
+        mParentId(parentId), mDueTime(dueTime) {}
 
   void print() {
     std::string statusStr;
@@ -43,12 +43,13 @@ struct Todo {
       statusStr = "suspend";
       break;
     }
-    printf("%d | %s | %s | %s | %s\n", mId, timeStamp2date(mTimeStamp).c_str(),
-           timeStamp2date(mDueTime).c_str(), mName.c_str(), statusStr.c_str());
+    printf("%d | %s | %s | %s | %s | %d\n", mId,
+           timeStamp2date(mTimeStamp).c_str(), timeStamp2date(mDueTime).c_str(),
+           mName.c_str(), statusStr.c_str(), mParentId);
   }
 
   static void printHeaders() {
-    printf("id | create_time | due_time | title | status\n");
+    printf("id | create_time | due_time | title | status | parentId\n");
   }
 };
 
@@ -57,7 +58,7 @@ public:
   TodoStorage();  // setup
   ~TodoStorage(); // unsetup
 
-  bool insert(const std::string &, unsigned int, unsigned long long);
+  bool insert(const std::string &, int, unsigned long long);
   bool update(const Todo &);
   bool remove(int);
   std::vector<Todo> queryAll();

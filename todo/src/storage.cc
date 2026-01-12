@@ -26,9 +26,9 @@ TS::TodoStorage() {
 
 TS::~TodoStorage() { sqlite3_close(db); }
 
-bool TS::insert(const std::string &name, unsigned int parentId,
+bool TS::insert(const std::string &name, int parentId,
                 unsigned long long dueTime) {
-  Todo item(name, dueTime);
+  Todo item(name, parentId, dueTime);
   const char *insertSQL = "INSERT INTO todos (name, timestamp, status, "
                           "duetime, parent_id) VALUES (?, ?, ?, ?, ?);";
 
@@ -51,8 +51,23 @@ bool TS::insert(const std::string &name, unsigned int parentId,
 
 std::vector<Todo> TS::queryAll() {
   std::vector<Todo> todos;
+  // const char *selectSQL =
+  //     "SELECT id, name, timestamp, status, duetime FROM todos;";
+
   const char *selectSQL =
-      "SELECT id, name, timestamp, status, duetime FROM todos;";
+      "WITH RECURSIVE todo_tree AS ("
+      "    SELECT id, name, timestamp, status, duetime, parent_id"
+      "    FROM todos"
+      "    WHERE parent_id = -1"
+      "    UNION ALL"
+      "    SELECT sub_task.id, sub_task.name, sub_task.timestamp, "
+      "sub_task.status, "
+      "sub_task.duetime, sub_task.parent_id"
+      "    FROM todos sub_task"
+      "    INNER JOIN todo_tree parent_task ON sub_task.parent_id = "
+      "parent_task.id"
+      ")"
+      "SELECT * FROM todo_tree;";
 
   sqlite3_stmt *stmt;
   if (sqlite3_prepare_v2(db, selectSQL, -1, &stmt, nullptr) != SQLITE_OK) {
@@ -65,7 +80,8 @@ std::vector<Todo> TS::queryAll() {
     item.mName = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
     item.mTimeStamp = sqlite3_column_int64(stmt, 2);
     item.mStatus = (Todo::Status)sqlite3_column_int(stmt, 3);
-    item.mDueTime = (Todo::Status)sqlite3_column_int(stmt, 4);
+    item.mDueTime = sqlite3_column_int(stmt, 4);
+    item.mParentId = sqlite3_column_int(stmt, 5);
     todos.push_back(item);
   }
 

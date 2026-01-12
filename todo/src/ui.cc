@@ -81,7 +81,8 @@ void ConsoleUI::todo(std::string_view params) {
     if (timeStamp == 0)
       LOG("invalid date input, ignored\n");
   }
-  TS.insert(title, 0, timeStamp);
+  // -1 is indicator of tier 0 todo
+  TS.insert(title, -1, timeStamp);
 }
 
 void ConsoleUI::subtodo(std::string_view params) {
