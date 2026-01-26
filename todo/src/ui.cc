@@ -81,8 +81,7 @@ void ConsoleUI::todo(std::string_view params) {
     if (timeStamp == 0)
       LOG("invalid date input, ignored\n");
   }
-  // -1 is indicator of tier 0 todo
-  TS.insert(title, -1, timeStamp);
+  TS.insert(title, 0, timeStamp);
 }
 
 void ConsoleUI::subtodo(std::string_view params) {
@@ -121,10 +120,11 @@ void ConsoleUI::show(std::string_view params) {
 
   Todo::printHeaders();
   if (count == 0) {
-    auto todos = TS.queryAll();
-    for (auto &todo : todos) {
-      todo.print();
-    }
+    auto todoTree = TS.queryAll();
+    todoTree.print();
+    // for (auto &todo : todos) {
+    //   todo.print();
+    // }
   } else if (count == 1) {
     auto todo = TS.query(id);
     if (todo.mIsValid)

@@ -1,5 +1,6 @@
 #include "todo.hpp"
 #include <sqlite3.h>
+#include "tree.hpp"
 
 using TS = TodoStorage;
 
@@ -49,16 +50,13 @@ bool TS::insert(const std::string &name, int parentId,
   return success;
 }
 
-std::vector<Todo> TS::queryAll() {
-  std::vector<Todo> todos;
-  // const char *selectSQL =
-  //     "SELECT id, name, timestamp, status, duetime FROM todos;";
-
+TodoTree TS::queryAll() {
+  TodoTree tt;
   const char *selectSQL =
       "WITH RECURSIVE todo_tree AS ("
       "    SELECT id, name, timestamp, status, duetime, parent_id"
       "    FROM todos"
-      "    WHERE parent_id = -1"
+      "    WHERE parent_id = 0"
       "    UNION ALL"
       "    SELECT sub_task.id, sub_task.name, sub_task.timestamp, "
       "sub_task.status, "
@@ -71,22 +69,23 @@ std::vector<Todo> TS::queryAll() {
 
   sqlite3_stmt *stmt;
   if (sqlite3_prepare_v2(db, selectSQL, -1, &stmt, nullptr) != SQLITE_OK) {
-    return todos;
+    return tt;
   }
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    Todo item;
-    item.mId = sqlite3_column_int(stmt, 0);
-    item.mName = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
-    item.mTimeStamp = sqlite3_column_int64(stmt, 2);
-    item.mStatus = (Todo::Status)sqlite3_column_int(stmt, 3);
-    item.mDueTime = sqlite3_column_int(stmt, 4);
-    item.mParentId = sqlite3_column_int(stmt, 5);
-    todos.push_back(item);
+    auto item = new Todo;
+    item->mId = sqlite3_column_int(stmt, 0);
+    item->mName = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+    item->mTimeStamp = sqlite3_column_int64(stmt, 2);
+    item->mStatus = (Todo::Status)sqlite3_column_int(stmt, 3);
+    item->mDueTime = sqlite3_column_int(stmt, 4);
+    item->mParentId = sqlite3_column_int(stmt, 5);
+    // todos.push_back(item);
+    tt.insert(item);
   }
 
   sqlite3_finalize(stmt);
-  return todos;
+  return tt;
 }
 
 Todo TS::query(int id) {

@@ -4,10 +4,12 @@
 #include <ctime>
 #include <string>
 #include <vector>
-
 #include <sqlite3.h>
+#include "tree.hpp"
 
 #define DB_NAME "test.db"
+
+struct TodoTree;
 
 struct Todo {
   enum Status {
@@ -29,13 +31,13 @@ struct Todo {
       : mName(name), mTimeStamp(std::time(0)), mStatus(Status::underway),
         mParentId(parentId), mDueTime(dueTime) {}
 
-  Todo(Todo &&todo)
-      : mName(std::move(todo.mName)), mId(todo.mId),
-        mTimeStamp(todo.mTimeStamp), mDueTime(todo.mDueTime),
-        mParentId(todo.mParentId), mStatus(todo.mStatus),
-        mIsValid(todo.mIsValid) {
-    todo.reset();
-  }
+  // Todo(Todo &&todo)
+  //     : mName(std::move(todo.mName)), mId(todo.mId),
+  //       mTimeStamp(todo.mTimeStamp), mDueTime(todo.mDueTime),
+  //       mParentId(todo.mParentId), mStatus(todo.mStatus),
+  //       mIsValid(todo.mIsValid) {
+  //   todo.reset();
+  // }
 
   void print() {
     std::string statusStr;
@@ -78,7 +80,7 @@ public:
   bool insert(const std::string &, int, unsigned long long);
   bool update(const Todo &);
   bool remove(int);
-  std::vector<Todo> queryAll();
+  TodoTree queryAll();
   Todo query(int);
   bool verifyID(unsigned int id);
 
