@@ -14,12 +14,15 @@ using Value = std::variant<int, std::string, float>;
 // nullable read
 #define N_READ(var)                                                            \
   std::string var;                                                             \
-  LOG(#var ": ");                                                              \
-  std::getline(std::cin, var);
+  {                                                                            \
+    char *line = readline("Console >> " #var ": ");                            \
+    var = std::string(line);                                                   \
+  }
 
 #define READ(var)                                                              \
   N_READ(var)                                                                  \
-  if (var.size() == 0) {                                                       \
+  if (var.size() == 0)                                                         \
+  {                                                                            \
     LOG("invalid input !\n");                                                  \
     return;                                                                    \
   }

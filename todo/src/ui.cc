@@ -7,6 +7,8 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 // public
 // ======
@@ -24,13 +26,12 @@ ConsoleUI::ConsoleUI() {
 
 void ConsoleUI::loop() {
   while (goNext) {
-    LOG_MAIN("");
-    std::getline(std::cin, buffer);
-
-    // handle ctrl+d
-    if (std::cin.eof())
+    char *line = readline("Console >> ");
+    if (line == NULL) {
       break;
+    }
 
+    buffer = std::string(line);
     parse();
   }
   std::cout << "bye bye ~\n";
