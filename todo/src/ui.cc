@@ -1,5 +1,6 @@
 #include "ui.hpp"
 #include "parser.hpp"
+#include "todo.hpp"
 #include "util.hpp"
 #include <exception>
 #include <functional>
@@ -13,7 +14,8 @@
 // public
 // ======
 
-ConsoleUI::ConsoleUI() {
+ConsoleUI::ConsoleUI()
+{
   REGISTER(quit);
   REGISTER(exit);
   REGISTER(todo);
@@ -24,10 +26,13 @@ ConsoleUI::ConsoleUI() {
   REGISTER(update);
 }
 
-void ConsoleUI::loop() {
-  while (goNext) {
+void ConsoleUI::loop()
+{
+  while (goNext)
+  {
     char *line = readline("Console >> ");
-    if (line == NULL) {
+    if (line == NULL)
+    {
       break;
     }
 
@@ -40,7 +45,8 @@ void ConsoleUI::loop() {
 // private
 // =======
 
-void ConsoleUI::parse() {
+void ConsoleUI::parse()
+{
   std::string first_word;
   std::stringstream ss(buffer);
   std::string_view params;
@@ -49,17 +55,21 @@ void ConsoleUI::parse() {
   ss >> first_word;
 
   // get params
-  if (first_word.size() < buffer.size()) {
+  if (first_word.size() < buffer.size())
+  {
     params =
         std::string_view(buffer).substr(first_word.size() + 1, buffer.size());
-  } else {
+  }
+  else
+  {
     params = "";
   }
 
   // call the callback if it exists
   if (first_word.length() != 0 && callbacks[first_word])
     callbacks[first_word](params);
-  else {
+  else
+  {
     LOG_MAIN("invalid input !\n");
   }
 }
@@ -68,16 +78,19 @@ void ConsoleUI::parse() {
 void ConsoleUI::quit(std::string_view params) { goNext = false; }
 void ConsoleUI::exit(std::string_view params) { goNext = false; }
 
-void ConsoleUI::help(std::string_view params) {
+void ConsoleUI::help(std::string_view params)
+{
   LOG("this is help manual...\n");
 }
 
-void ConsoleUI::todo(std::string_view params) {
+void ConsoleUI::todo(std::string_view params)
+{
   READ(title);
   N_READ(due_date);
 
   unsigned long long timeStamp = 0;
-  if (due_date.size() != 0) {
+  if (due_date.size() != 0)
+  {
     timeStamp = date2timeStamp(due_date);
     if (timeStamp == 0)
       LOG("invalid date input, ignored\n");
@@ -85,7 +98,8 @@ void ConsoleUI::todo(std::string_view params) {
   TS.insert(title, 0, timeStamp);
 }
 
-void ConsoleUI::subtodo(std::string_view params) {
+void ConsoleUI::subtodo(std::string_view params)
+{
   READ(title);
   READ(parentId);
   N_READ(due_date);
@@ -94,19 +108,24 @@ void ConsoleUI::subtodo(std::string_view params) {
   unsigned long long timeStamp = 0;
 
   // process parentId
-  try {
+  try
+  {
     intParentId = std::stoi(parentId);
-    if (!TS.verifyID(intParentId)) {
+    if (!TS.verifyID(intParentId))
+    {
       LOG("no such parentId !\n");
       return;
     }
-  } catch (std::exception e) {
+  }
+  catch (std::exception e)
+  {
     LOG("invalid parentId !\n");
     return;
   }
 
   // process due time
-  if (due_date.size() != 0) {
+  if (due_date.size() != 0)
+  {
     timeStamp = date2timeStamp(due_date);
     if (timeStamp == 0)
       LOG("invalid date input, ignored\n");
@@ -115,18 +134,22 @@ void ConsoleUI::subtodo(std::string_view params) {
   TS.insert(title, intParentId, timeStamp);
 }
 
-void ConsoleUI::show(std::string_view params) {
+void ConsoleUI::show(std::string_view params)
+{
   int id;
   auto count = Parser::parse(std::string(params), {&id});
 
   Todo::printHeaders();
-  if (count == 0) {
+  if (count == 0)
+  {
     auto todoTree = TS.queryAll();
     todoTree.print();
     // for (auto &todo : todos) {
     //   todo.print();
     // }
-  } else if (count == 1) {
+  }
+  else if (count == 1)
+  {
     auto todo = TS.query(id);
     if (todo.mIsValid)
       todo.print();
@@ -135,52 +158,64 @@ void ConsoleUI::show(std::string_view params) {
   }
 }
 
-void ConsoleUI::remove(std::string_view params) {
+void ConsoleUI::remove(std::string_view params)
+{
   int id;
   auto count = Parser::parse(std::string(params), {&id});
 
-  if (count != 1) {
+  if (count != 1)
+  {
     LOG("invalid param!\n");
   }
 
   auto todo = TS.query(id);
-  if (todo.mIsValid) {
+  if (todo.mIsValid)
+  {
     LOG("sure to delete this? (y/n)\n");
     todo.print();
 
     READ(confirm);
-    if (confirm == "y") {
+    if (confirm == "y")
+    {
       TS.remove(id);
       LOG("id " << id << " removed\n");
-    } else
+    }
+    else
       LOG("cancelled\n");
-  } else
+  }
+  else
     LOG("no such id !\n");
 }
 
 // modify <id> <status = underway> <title = "">
-void ConsoleUI::update(std::string_view params) {
+void ConsoleUI::update(std::string_view params)
+{
   int id;
-  Todo::Status status;
-  std::string title = "";
 
-  auto count = Parser::parse(std::string(params), {&id, &status, &title});
+  auto count = Parser::parse(std::string(params), {&id});
 
-  if (count > 1) {
-    // at least id and status are provided
+  if (count == 1)
+  {
     auto todo = TS.query(id);
 
-    if (!todo.mIsValid) {
+    if (!todo.mIsValid)
+    {
       LOG("no such id !\n");
       return;
     }
 
-    todo.mStatus = status;
-    if (title != "")
-      todo.mName = title;
+    READ(status);
+    if (status == "underway")
+      todo.mStatus = Todo::underway;
+    else if (status == "suspend")
+      todo.mStatus = Todo::suspend;
+    else if (status == "closed")
+      todo.mStatus = Todo::closed;
 
     TS.update(todo);
-  } else {
+  }
+  else
+  {
     LOG("invalid params !\n");
   }
 }
