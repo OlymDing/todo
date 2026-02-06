@@ -28,6 +28,7 @@ ConsoleUI::ConsoleUI()
 
 void ConsoleUI::loop()
 {
+  show("");
   while (goNext)
   {
     char *line = readline("Console >> ");
