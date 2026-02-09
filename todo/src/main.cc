@@ -13,7 +13,8 @@
 
 int main()
 {
-  auto gui = new GUI();
+  auto gui = GUI();
+  gui.loop();
   std::cout << "test\n";
   return 1;
 }
