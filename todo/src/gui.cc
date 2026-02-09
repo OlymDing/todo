@@ -1,4 +1,5 @@
 #include "gui.hpp"
+#include "kernel/PX_Object.h"
 #include "kernel/PX_Object_Label.h"
 #include <PainterEngine.h>
 
@@ -16,9 +17,12 @@ GUI::GUI()
 
 void GUI::show()
 {
+  int x = 0, y = 0;
   auto todoTree = TS.queryAll();
   auto node = todoTree.mList.front();
   auto *card = new Card(0, 0);
+  todoTree.traversal([card](Todo *todo, int row, int col) {});
+  auto *test_card = new Card(150, 0);
   card->updateTitle(node->value->mName);
 }
 
@@ -27,6 +31,8 @@ void GUI::show()
 
 px_void CardOnDrag(PX_Object *pObject, PX_Object_Event e, px_void *ptr)
 {
+  // PX_ObjectSetPosition(pObject, PX_Object_Event_GetCursorX(e),
+  // PX_Object_Event_GetCursorY(e), 0);
   pObject->x = PX_Object_Event_GetCursorX(e);
   pObject->y = PX_Object_Event_GetCursorY(e);
 }
@@ -54,25 +60,25 @@ PX_Object *PX_Object_TodoCardCreate(
   );
   TodoCard *card = PX_ObjectGetDescIndex(TodoCard, pObject, 0);
   card->title_header = PX_Object_LabelCreate(
-      mp, pObject, x + 10, y + 10, 90, 40,
-      "title: ", PainterEngine_GetFontModule(), PX_COLOR_BLACK
+      mp, pObject, 10, 10, 90, 40, "title: ", PainterEngine_GetFontModule(),
+      PX_COLOR_BLACK
   );
   // PX_Object_LabelSetBorder(card->title_header, true);
 
   card->title_text = PX_Object_LabelCreate(
-      mp, pObject, x + 110, y + 10, 100, 40, "title text",
+      mp, pObject, 110, 10, 100, 40, "title text",
       PainterEngine_GetFontModule(), PX_COLOR_BLACK
   );
   // PX_Object_LabelSetBorder(card->title_text, true);
 
   card->status_header = PX_Object_LabelCreate(
-      mp, pObject, x + 10, y + 50, 90, 40,
-      "status: ", PainterEngine_GetFontModule(), PX_COLOR_BLACK
+      mp, pObject, 10, 50, 90, 40, "status: ", PainterEngine_GetFontModule(),
+      PX_COLOR_BLACK
   );
   // PX_Object_LabelSetBorder(card->status_header, true);
 
   card->status_text = PX_Object_LabelCreate(
-      mp, pObject, x + 110, y + 50, 100, 40, "status text",
+      mp, pObject, 110, 50, 100, 40, "status text",
       PainterEngine_GetFontModule(), PX_COLOR_BLACK
   );
 
