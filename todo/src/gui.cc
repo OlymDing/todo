@@ -30,6 +30,7 @@ void GUI::createCard(Todo *todo, int row, int col) {
   int y = (col - 1) * 110;
   
   auto card = new Card(x, y);
+  card->updateTitle(todo->mName);
   cards.push_back(card);
 }
 
