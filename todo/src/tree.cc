@@ -58,14 +58,14 @@ void TodoTree::traversal(
     std::function<void(Todo *todo, int row, int col)> callback
 )
 {
-  std::stack<TreeNode *> stack;
-  stack.push(mRoot);
+  std::list<TreeNode *> stack;
+  stack.push_back(mRoot);
 
   int col_count = 1;
   while (!stack.empty())
   {
-    auto node = stack.top();
-    stack.pop();
+    auto node = stack.front();
+    stack.pop_front();
 
     int count = 0;
     for (auto child : node->children)
@@ -74,7 +74,7 @@ void TodoTree::traversal(
         col_count ++;
       child->row = node->row + 1;
       child->col = col_count;
-      stack.push(child);
+      stack.push_back(child);
       count++;
     }
 
