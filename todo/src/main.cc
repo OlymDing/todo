@@ -14,7 +14,7 @@
 int main()
 {
   auto gui = GUI();
-  gui.loop();
+  gui.show();
   std::cout << "test\n";
   return 1;
 }
