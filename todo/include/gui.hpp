@@ -2,15 +2,23 @@
 #include <PainterEngine.h>
 #include "todo.hpp"
 
+struct Card;
+
 class GUI
 {
 public:
   TodoStorage TS;
+  std::vector<Card *> cards;
 
   GUI();
-  ~GUI() {}
+  ~GUI() {
+    for (auto card : cards) {
+      delete card;
+    }
+  }
 
   void show();
+  void createCard(Todo *todo, int row, int col);
 };
 
 PX_Object *PX_Object_TodoCardCreate(

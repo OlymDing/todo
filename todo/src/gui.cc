@@ -20,10 +20,17 @@ void GUI::show()
   int x = 0, y = 0;
   auto todoTree = TS.queryAll();
   auto node = todoTree.mList.front();
-  auto *card = new Card(0, 0);
-  todoTree.traversal([card](Todo *todo, int row, int col) {});
-  auto *test_card = new Card(150, 0);
-  card->updateTitle(node->value->mName);
+  todoTree.traversal([this](Todo *todo, int row, int col) {
+    createCard(todo, row, col);
+  });
+}
+
+void GUI::createCard(Todo *todo, int row, int col) {
+  int x = (row - 1) * 230;
+  int y = (col - 1) * 110;
+  
+  auto card = new Card(x, y);
+  cards.push_back(card);
 }
 
 // card

@@ -61,7 +61,7 @@ void TodoTree::traversal(
   std::stack<TreeNode *> stack;
   stack.push(mRoot);
 
-  int row_count = 1;
+  int col_count = 1;
   while (!stack.empty())
   {
     auto node = stack.top();
@@ -70,7 +70,10 @@ void TodoTree::traversal(
     int count = 0;
     for (auto child : node->children)
     {
-      child->col = node->col + 1;
+      if (count != 0)
+        col_count ++;
+      child->row = node->row + 1;
+      child->col = col_count;
       stack.push(child);
       count++;
     }
