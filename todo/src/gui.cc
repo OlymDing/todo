@@ -8,7 +8,7 @@
 
 GUI::GUI()
 {
-  PainterEngine_Initialize(800, 480);
+  PainterEngine_Initialize(1800, 1480);
   PainterEngine_LoadFontModule(
       "/home/olym/Downloads/CascadiaMono/CaskaydiaMonoNerdFont-Bold.ttf",
       PX_FONTMODULE_CODEPAGE_GBK, 20
@@ -20,15 +20,15 @@ void GUI::show()
   int x = 0, y = 0;
   auto todoTree = TS.queryAll();
   auto node = todoTree.mList.front();
-  todoTree.traversal([this](Todo *todo, int row, int col) {
-    createCard(todo, row, col);
-  });
+  todoTree.traversal([this](Todo *todo, int row, int col)
+                     { createCard(todo, row, col); });
 }
 
-void GUI::createCard(Todo *todo, int row, int col) {
-  int x = (row - 1) * 230;
-  int y = (col - 1) * 110;
-  
+void GUI::createCard(Todo *todo, int row, int col)
+{
+  int x = (col - 1) * 230;
+  int y = (row - 1) * 110;
+
   auto card = new Card(x, y);
   card->updateTitle(todo->mName);
   cards.push_back(card);
