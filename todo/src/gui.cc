@@ -39,10 +39,15 @@ void GUI::createCard(Todo *todo, int row, int col)
 
 px_void CardOnDrag(PX_Object *pObject, PX_Object_Event e, px_void *ptr)
 {
-  // PX_ObjectSetPosition(pObject, PX_Object_Event_GetCursorX(e),
-  // PX_Object_Event_GetCursorY(e), 0);
-  pObject->x = PX_Object_Event_GetCursorX(e);
-  pObject->y = PX_Object_Event_GetCursorY(e);
+  auto x = PX_Object_Event_GetCursorX(e);
+  auto y = PX_Object_Event_GetCursorY(e);
+
+  if (PX_ObjectIsPointInRegion(pObject, x, y))
+  {
+    PX_ObjectSetPosition(pObject, x, y, 0);
+    // pObject->x = x;
+    // pObject->y = y;
+  }
 }
 
 PX_OBJECT_UPDATE_FUNCTION(TodoCardUpdate) {}
