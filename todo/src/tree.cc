@@ -26,8 +26,8 @@ void TodoTree::print()
     auto node = stack.top();
     stack.pop();
 
-    for (auto child : node->children)
-      stack.push(child);
+    for (auto it = node->children.rbegin(); it != node->children.rend(); ++it)
+      stack.push(*it);
 
     if (node != mRoot)
     {
@@ -61,7 +61,7 @@ void TodoTree::traversal(
   std::stack<TreeNode *> stack;
   stack.push(mRoot);
 
-  int current_row = 1;
+  int current_row = 0;
   int prev_col = 1;
   while (!stack.empty())
   {
@@ -77,11 +77,11 @@ void TodoTree::traversal(
 
     if (node != mRoot)
     {
-      node->row = current_row;
-      callback(node->value, node->row, node->col);
-
       if (node->col <= prev_col)
         current_row++;
+
+      node->row = current_row;
+      callback(node->value, node->row, node->col);
 
       prev_col = node->col;
     }

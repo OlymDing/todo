@@ -14,11 +14,21 @@
 
 int main()
 {
-  // ConsoleUI ui;
-  // ui.loop();
-  // return 0;
-  auto gui = GUI();
-  gui.show();
-  std::cout << "test\n";
-  return 1;
+  std::cout << "mode: ";
+  std::string mode;
+  std::cin >> mode;
+
+  if (mode == "tui")
+  {
+    ConsoleUI ui;
+    ui.loop();
+    return 0;
+  }
+  else if (mode == "gui")
+  {
+    auto gui = GUI();
+    gui.show();
+    std::cout << "test\n";
+    return 0;
+  }
 }
