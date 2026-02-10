@@ -68,8 +68,9 @@ void TodoTree::traversal(
     auto node = stack.top();
     stack.pop();
 
-    for (auto child : node->children)
+    for (auto it = node->children.rbegin(); it != node->children.rend(); ++it)
     {
+      auto child = *it;
       child->col = node->col + 1;
       stack.push(child);
     }
