@@ -11,7 +11,7 @@ GUI::GUI()
   PainterEngine_Initialize(1800, 1480);
   PainterEngine_LoadFontModule(
       "/home/olym/otherProjects/popular-fonts/microsoft.ttf",
-      PX_FONTMODULE_CODEPAGE_GBK, 20
+      PX_FONTMODULE_CODEPAGE_UTF8, 20
   );
 }
 
