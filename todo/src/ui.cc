@@ -144,7 +144,7 @@ void ConsoleUI::show(std::string_view params)
   if (count == 0)
   {
     auto todoTree = TS.queryAll();
-    todoTree.print();
+    std::cout << todoTree.summary();
     // for (auto &todo : todos) {
     //   todo.print();
     // }

@@ -1,6 +1,9 @@
 #include "tree.hpp"
 #include <stack>
 #include <string>
+#include <fmt/format.h>
+#include "todo.hpp"
+#include "util.hpp"
 
 TodoTree::TodoTree()
 {
@@ -99,4 +102,43 @@ void TodoTree::traversal(
   }
 }
 
-std::string TodoTree::summary() { return ""; }
+std::string TodoTree::summary()
+{
+  std::string result = "";
+  std::stack<TreeNode *> stack;
+  stack.push(mRoot);
+
+  while (!stack.empty())
+  {
+    auto node = stack.top();
+    stack.pop();
+
+    for (auto it = node->children.rbegin(); it != node->children.rend(); ++it)
+      stack.push(*it);
+
+    if (node != mRoot)
+    {
+      auto todo = node->value;
+      std::string status_str;
+      switch (todo->mStatus)
+      {
+      case Todo::underway:
+        status_str = "underway";
+        break;
+      case Todo::closed:
+        status_str = "closed";
+        break;
+      case Todo::suspend:
+        status_str = "suspend";
+        break;
+      }
+      std::string node_summary = fmt::format(
+          "{} Todo Title: {}, Start Date: {}, Status: {}\n",
+          node->section_title, todo->mName, timeStamp2date(todo->mTimeStamp),
+          status_str
+      );
+      result += node_summary;
+    }
+  }
+  return result;
+}
