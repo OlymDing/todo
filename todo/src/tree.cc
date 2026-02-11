@@ -1,9 +1,13 @@
 #include "tree.hpp"
 #include <stack>
+#include <string>
 
 TodoTree::TodoTree()
 {
   mRoot = new TreeNode;
+  mRoot->col = 0;
+  mRoot->row = 0;
+  mRoot->section_title = "";
   mMap[0] = mRoot;
 }
 
@@ -31,6 +35,7 @@ void TodoTree::print()
 
     if (node != mRoot)
     {
+      std::cout << node->section_title << ' ';
       node->value->print();
     }
   }
@@ -50,6 +55,12 @@ void TodoTree::insert(Todo *value)
   if (mMap.find(value->mParentId) != mMap.end())
   {
     mMap[value->mParentId]->children.push_back(node);
+    if (value->mParentId == 0)
+      node->section_title = std::to_string(mRoot->children.size());
+    else
+      node->section_title =
+          mMap[value->mParentId]->section_title + '.' +
+          std::to_string(mMap[value->mParentId]->children.size());
   }
   mList.push_back(node);
 }
@@ -87,3 +98,5 @@ void TodoTree::traversal(
     }
   }
 }
+
+std::string TodoTree::summary() { return ""; }

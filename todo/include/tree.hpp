@@ -11,7 +11,8 @@ struct TreeNode
 {
   std::list<TreeNode *> children;
   Todo *value;
-  int row = 0, col = 0; // they actually start from 1
+  int row, col; // start from 1
+  std::string section_title;
 };
 
 struct TodoTree
@@ -27,4 +28,5 @@ struct TodoTree
   void print();
   void insert(Todo *value);
   void traversal(std::function<void(Todo *todo, int row, int col)>);
+  std::string summary();
 };
