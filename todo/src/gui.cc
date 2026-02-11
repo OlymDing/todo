@@ -66,6 +66,11 @@ PX_OBJECT_EVENT_FUNCTION(CardOnMouseRelease)
   card->bselect = false;
 }
 
+PX_OBJECT_EVENT_FUNCTION(CardOnMouseWheel)
+{
+  pObject->y += (px_float)PX_Object_Event_GetCursorZ(e) * 10;
+}
+
 PX_OBJECT_UPDATE_FUNCTION(TodoCardUpdate) {}
 
 PX_OBJECT_RENDER_FUNCTION(TodoCardRender)
@@ -118,6 +123,9 @@ PX_Object *PX_Object_TodoCardCreate(
   PX_ObjectRegisterEvent(
       pObject, PX_OBJECT_EVENT_CURSORUP, CardOnMouseRelease, 0
   );
+  PX_ObjectRegisterEvent(
+      pObject, PX_OBJECT_EVENT_CURSORWHEEL, CardOnMouseWheel, 0
+  ); // 注册鼠标滚轮事件
   return pObject;
 }
 

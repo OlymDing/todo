@@ -31,4 +31,5 @@ int main()
     std::cout << "test\n";
     return 0;
   }
+  return 1;
 }
