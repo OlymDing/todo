@@ -37,17 +37,33 @@ void GUI::createCard(Todo *todo, int row, int col)
 // card
 // ====
 
-px_void CardOnDrag(PX_Object *pObject, PX_Object_Event e, px_void *ptr)
+PX_OBJECT_EVENT_FUNCTION(CardOnDrag)
 {
-  auto x = PX_Object_Event_GetCursorX(e);
-  auto y = PX_Object_Event_GetCursorY(e);
-
-  if (PX_ObjectIsPointInRegion(pObject, x, y))
+  TodoCard *card = PX_ObjectGetDescIndex(TodoCard, pObject, 0);
+  if (card->bselect)
   {
-    PX_ObjectSetPosition(pObject, x, y, 0);
-    // pObject->x = x;
-    // pObject->y = y;
+    pObject->x += PX_Object_Event_GetCursorX(e) - card->last_cursorx;
+    pObject->y += PX_Object_Event_GetCursorY(e) - card->last_cursory;
   }
+  card->last_cursorx = PX_Object_Event_GetCursorX(e);
+  card->last_cursory = PX_Object_Event_GetCursorY(e);
+}
+
+PX_OBJECT_EVENT_FUNCTION(CardOnMouseDown)
+{
+  TodoCard *card = PX_ObjectGetDescIndex(TodoCard, pObject, 0);
+  if (PX_ObjectIsCursorInRegion(pObject, e))
+  {
+    card->bselect = PX_TRUE;
+    card->last_cursorx = PX_Object_Event_GetCursorX(e);
+    card->last_cursory = PX_Object_Event_GetCursorY(e);
+  }
+}
+
+PX_OBJECT_EVENT_FUNCTION(CardOnMouseRelease)
+{
+  TodoCard *card = PX_ObjectGetDescIndex(TodoCard, pObject, 0);
+  card->bselect = false;
 }
 
 PX_OBJECT_UPDATE_FUNCTION(TodoCardUpdate) {}
@@ -96,6 +112,12 @@ PX_Object *PX_Object_TodoCardCreate(
   );
 
   PX_ObjectRegisterEvent(pObject, PX_OBJECT_EVENT_CURSORDRAG, CardOnDrag, 0);
+  PX_ObjectRegisterEvent(
+      pObject, PX_OBJECT_EVENT_CURSORDOWN, CardOnMouseDown, 0
+  );
+  PX_ObjectRegisterEvent(
+      pObject, PX_OBJECT_EVENT_CURSORUP, CardOnMouseRelease, 0
+  );
   return pObject;
 }
 

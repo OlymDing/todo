@@ -29,6 +29,8 @@ struct TodoCard
 {
   PX_Object *title_header, *title_text;
   PX_Object *status_header, *status_text;
+  bool bselect;
+  float last_cursorx, last_cursory;
 };
 
 struct Card
