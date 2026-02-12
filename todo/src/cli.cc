@@ -24,6 +24,7 @@ CLI::CLI()
   REGISTER(show);
   REGISTER(remove);
   REGISTER(update);
+  REGISTER(summary);
 }
 
 void CLI::loop()
@@ -79,10 +80,7 @@ void CLI::parse()
 void CLI::quit(std::string_view params) { goNext = false; }
 void CLI::exit(std::string_view params) { goNext = false; }
 
-void CLI::help(std::string_view params)
-{
-  LOG("this is help manual...\n");
-}
+void CLI::help(std::string_view params) { LOG("this is help manual...\n"); }
 
 void CLI::todo(std::string_view params)
 {
@@ -219,4 +217,8 @@ void CLI::update(std::string_view params)
   {
     LOG("invalid params !\n");
   }
+}
+
+void CLI::summary(std::string_view params) { auto todoTree = TS.queryAll();
+
 }

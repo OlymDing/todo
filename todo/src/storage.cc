@@ -291,7 +291,7 @@ std::string TodoTree::summary()
         break;
       }
       std::string node_summary = fmt::format(
-          "{} Todo Title: {}, Start Date: {}, Status: {}\n",
+          "{} Todo Title: {}, Start Date: {}, Status: {}; ",
           node->section_title, todo->mName, timeStamp2date(todo->mTimeStamp),
           status_str
       );

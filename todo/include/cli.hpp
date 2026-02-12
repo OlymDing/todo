@@ -27,4 +27,5 @@ private:
   void show(std::string_view params);
   void remove(std::string_view params);
   void update(std::string_view params);
+  void summary(std::string_view params);
 };
