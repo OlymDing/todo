@@ -10,7 +10,7 @@
 #include "PainterEngine.h"
 #include <iostream>
 #include "gui.hpp"
-#include "ui.hpp"
+#include "cli.hpp"
 
 int main()
 {
@@ -18,16 +18,16 @@ int main()
   std::string mode;
   std::cin >> mode;
 
-  if (mode == "tui")
+  if (mode == "cli")
   {
-    ConsoleUI ui;
+    CLI ui;
     ui.loop();
     return 0;
   }
   else if (mode == "gui")
   {
-    auto gui = GUI();
-    gui.show();
+    GUI ui;
+    ui.show();
     std::cout << "test\n";
     return 0;
   }

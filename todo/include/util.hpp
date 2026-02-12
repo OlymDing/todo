@@ -6,7 +6,7 @@
 using Value = std::variant<int, std::string, float>;
 
 #define REGISTER(cmd)                                                          \
-  callbacks[#cmd] = std::bind(&ConsoleUI::cmd, this, std::placeholders::_1);
+  callbacks[#cmd] = std::bind(&CLI::cmd, this, std::placeholders::_1);
 
 #define LOG(words) std::cout << __func__ << " >> " << words
 #define LOG_MAIN(words) std::cout << "Console >> " << words

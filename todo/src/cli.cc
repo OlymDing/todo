@@ -1,6 +1,6 @@
-#include "ui.hpp"
+#include "cli.hpp"
 #include "parser.hpp"
-#include "todo.hpp"
+#include "storage.hpp"
 #include "util.hpp"
 #include <exception>
 #include <functional>
@@ -14,7 +14,7 @@
 // public
 // ======
 
-ConsoleUI::ConsoleUI()
+CLI::CLI()
 {
   REGISTER(quit);
   REGISTER(exit);
@@ -26,7 +26,7 @@ ConsoleUI::ConsoleUI()
   REGISTER(update);
 }
 
-void ConsoleUI::loop()
+void CLI::loop()
 {
   show("");
   while (goNext)
@@ -46,7 +46,7 @@ void ConsoleUI::loop()
 // private
 // =======
 
-void ConsoleUI::parse()
+void CLI::parse()
 {
   std::string first_word;
   std::stringstream ss(buffer);
@@ -76,15 +76,15 @@ void ConsoleUI::parse()
 }
 
 // callbacks
-void ConsoleUI::quit(std::string_view params) { goNext = false; }
-void ConsoleUI::exit(std::string_view params) { goNext = false; }
+void CLI::quit(std::string_view params) { goNext = false; }
+void CLI::exit(std::string_view params) { goNext = false; }
 
-void ConsoleUI::help(std::string_view params)
+void CLI::help(std::string_view params)
 {
   LOG("this is help manual...\n");
 }
 
-void ConsoleUI::todo(std::string_view params)
+void CLI::todo(std::string_view params)
 {
   READ(title);
   N_READ(due_date);
@@ -99,7 +99,7 @@ void ConsoleUI::todo(std::string_view params)
   TS.insert(title, 0, timeStamp);
 }
 
-void ConsoleUI::subtodo(std::string_view params)
+void CLI::subtodo(std::string_view params)
 {
   READ(title);
   READ(parentId);
@@ -135,7 +135,7 @@ void ConsoleUI::subtodo(std::string_view params)
   TS.insert(title, intParentId, timeStamp);
 }
 
-void ConsoleUI::show(std::string_view params)
+void CLI::show(std::string_view params)
 {
   int id;
   auto count = Parser::parse(std::string(params), {&id});
@@ -159,7 +159,7 @@ void ConsoleUI::show(std::string_view params)
   }
 }
 
-void ConsoleUI::remove(std::string_view params)
+void CLI::remove(std::string_view params)
 {
   int id;
   auto count = Parser::parse(std::string(params), {&id});
@@ -189,7 +189,7 @@ void ConsoleUI::remove(std::string_view params)
 }
 
 // modify <id> <status = underway> <title = "">
-void ConsoleUI::update(std::string_view params)
+void CLI::update(std::string_view params)
 {
   int id;
 

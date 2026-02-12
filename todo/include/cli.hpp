@@ -1,12 +1,12 @@
-#include "todo.hpp"
+#include "storage.hpp"
 #include <functional>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 
-class ConsoleUI {
+class CLI {
 public:
-  ConsoleUI();
+  CLI();
   void loop();
 
 private:
