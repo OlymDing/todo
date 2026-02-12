@@ -28,7 +28,6 @@ int main()
   {
     GUI ui;
     ui.show();
-    std::cout << "test\n";
     return 0;
   }
   return 1;

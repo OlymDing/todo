@@ -1,6 +1,4 @@
 #include "gui.hpp"
-#include "kernel/PX_Object.h"
-#include "kernel/PX_Object_Label.h"
 #include <PainterEngine.h>
 
 // gui
@@ -31,6 +29,7 @@ void GUI::createCard(Todo *todo, int row, int col)
 
   auto card = new Card(x, y);
   card->updateTitle(todo->mName);
+  card->updateStatus(todo->mStatus);
   cards.push_back(card);
 }
 
@@ -40,7 +39,13 @@ void GUI::createCard(Todo *todo, int row, int col)
 PX_OBJECT_EVENT_FUNCTION(CardOnDrag)
 {
   TodoCard *card = PX_ObjectGetDescIndex(TodoCard, pObject, 0);
-  if (card->bselect)
+  if (card->bLeftSelected)
+  {
+    pObject->x += PX_Object_Event_GetCursorX(e) - card->last_cursorx;
+    pObject->y += PX_Object_Event_GetCursorY(e) - card->last_cursory;
+  }
+
+  if (card->bRightSelected)
   {
     pObject->x += PX_Object_Event_GetCursorX(e) - card->last_cursorx;
     pObject->y += PX_Object_Event_GetCursorY(e) - card->last_cursory;
@@ -49,21 +54,35 @@ PX_OBJECT_EVENT_FUNCTION(CardOnDrag)
   card->last_cursory = PX_Object_Event_GetCursorY(e);
 }
 
-PX_OBJECT_EVENT_FUNCTION(CardOnMouseDown)
+PX_OBJECT_EVENT_FUNCTION(CardOnLeftMouseDown)
 {
   TodoCard *card = PX_ObjectGetDescIndex(TodoCard, pObject, 0);
   if (PX_ObjectIsCursorInRegion(pObject, e))
   {
-    card->bselect = PX_TRUE;
+    card->bLeftSelected = PX_TRUE;
     card->last_cursorx = PX_Object_Event_GetCursorX(e);
     card->last_cursory = PX_Object_Event_GetCursorY(e);
   }
 }
 
-PX_OBJECT_EVENT_FUNCTION(CardOnMouseRelease)
+PX_OBJECT_EVENT_FUNCTION(CardOnLeftMouseRelease)
 {
   TodoCard *card = PX_ObjectGetDescIndex(TodoCard, pObject, 0);
-  card->bselect = false;
+  card->bLeftSelected = false;
+}
+
+PX_OBJECT_EVENT_FUNCTION(CardOnRightMouseDown)
+{
+  TodoCard *card = PX_ObjectGetDescIndex(TodoCard, pObject, 0);
+  card->bRightSelected = PX_TRUE;
+  card->last_cursorx = PX_Object_Event_GetCursorX(e);
+  card->last_cursory = PX_Object_Event_GetCursorY(e);
+}
+
+PX_OBJECT_EVENT_FUNCTION(CardOnRightMouseRelease)
+{
+  TodoCard *card = PX_ObjectGetDescIndex(TodoCard, pObject, 0);
+  card->bLeftSelected = false;
 }
 
 PX_OBJECT_EVENT_FUNCTION(CardOnMouseWheel)
@@ -81,6 +100,20 @@ PX_OBJECT_RENDER_FUNCTION(TodoCardRender)
   auto w = (px_int)rect.width;
   auto h = (px_int)rect.height;
   PX_GeoDrawBorder(psurface, x, y, x + w, y + h - 1, 1, PX_COLOR_BLACK);
+
+  TodoCard *card = PX_ObjectGetDescIndex(TodoCard, pObject, 0);
+  switch (card->status)
+  {
+  case Todo::underway:
+    PX_GeoDrawRect(psurface, x, y, x + w, y + h, PX_CSS_COLOR_DarkRed);
+    break;
+  case Todo::suspend:
+    PX_GeoDrawRect(psurface, x, y, x + w, y + h, PX_CSS_COLOR_Orange);
+    break;
+  case Todo::closed:
+    PX_GeoDrawRect(psurface, x, y, x + w, y + h, PX_COLOR_GREEN);
+    break;
+  }
 }
 PX_OBJECT_FREE_FUNCTION(TodoCardFree) {}
 
@@ -118,10 +151,16 @@ PX_Object *PX_Object_TodoCardCreate(
 
   PX_ObjectRegisterEvent(pObject, PX_OBJECT_EVENT_CURSORDRAG, CardOnDrag, 0);
   PX_ObjectRegisterEvent(
-      pObject, PX_OBJECT_EVENT_CURSORDOWN, CardOnMouseDown, 0
+      pObject, PX_OBJECT_EVENT_CURSORDOWN, CardOnLeftMouseDown, 0
   );
   PX_ObjectRegisterEvent(
-      pObject, PX_OBJECT_EVENT_CURSORUP, CardOnMouseRelease, 0
+      pObject, PX_OBJECT_EVENT_CURSORUP, CardOnLeftMouseRelease, 0
+  );
+  PX_ObjectRegisterEvent(
+      pObject, PX_OBJECT_EVENT_CURSORRDOWN, CardOnRightMouseDown, 0
+  );
+  PX_ObjectRegisterEvent(
+      pObject, PX_OBJECT_EVENT_CURSORRUP, CardOnRightMouseRelease, 0
   );
   PX_ObjectRegisterEvent(
       pObject, PX_OBJECT_EVENT_CURSORWHEEL, CardOnMouseWheel, 0
@@ -134,7 +173,8 @@ void Card::updateTitle(const std::string &title)
   PX_Object_LabelSetText(card->title_text, title.c_str());
 }
 
-void Card::updateStatus(const std::string &status)
+void Card::updateStatus(Todo::Status status)
 {
-  PX_Object_LabelSetText(card->status_text, status.c_str());
+  card->status = status;
+  PX_Object_LabelSetText(card->status_text, Todo::getStatusStr(status).c_str());
 }

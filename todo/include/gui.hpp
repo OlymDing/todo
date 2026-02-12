@@ -29,8 +29,10 @@ struct TodoCard
 {
   PX_Object *title_header, *title_text;
   PX_Object *status_header, *status_text;
-  bool bselect;
+  bool bLeftSelected;
+  bool bRightSelected;
   float last_cursorx, last_cursory;
+  Todo::Status status;
 };
 
 struct Card
@@ -46,5 +48,5 @@ struct Card
   ~Card() {}
 
   void updateTitle(const std::string &title);
-  void updateStatus(const std::string &status);
+  void updateStatus(Todo::Status status);
 };

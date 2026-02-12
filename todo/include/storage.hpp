@@ -45,6 +45,20 @@ struct Todo
     suspend,
     closed,
   };
+
+  static std::string getStatusStr(Status status)
+  {
+    switch (status)
+    {
+    case underway:
+      return "underway";
+    case suspend:
+      return "suspend";
+    case closed:
+      return "closed";
+    }
+    return "";
+  }
   unsigned int mId = 0;
   unsigned long long mTimeStamp;
   unsigned long long mDueTime;
