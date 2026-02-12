@@ -1,4 +1,6 @@
 #include "gui.hpp"
+#include "core/PX_Typedef.h"
+#include "kernel/PX_Object_Label.h"
 #include <PainterEngine.h>
 
 // gui
@@ -106,6 +108,10 @@ PX_OBJECT_RENDER_FUNCTION(TodoCardRender)
   {
   case Todo::underway:
     PX_GeoDrawRect(psurface, x, y, x + w, y + h, PX_CSS_COLOR_DarkRed);
+    PX_Object_LabelSetTextColor(card->title_text, PX_COLOR_WHITE);
+    PX_Object_LabelSetTextColor(card->title_header, PX_COLOR_WHITE);
+    PX_Object_LabelSetTextColor(card->status_text, PX_COLOR_WHITE);
+    PX_Object_LabelSetTextColor(card->status_header, PX_COLOR_WHITE);
     break;
   case Todo::suspend:
     PX_GeoDrawRect(psurface, x, y, x + w, y + h, PX_CSS_COLOR_Orange);
